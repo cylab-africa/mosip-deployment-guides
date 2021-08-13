@@ -1,44 +1,29 @@
 # MOSIP Sandbox-v2 1.1.2 On-Premise Detailed Deployment Guide
 ## by: CyLab-Africa
 
-MOSIP Sandbox-v2 v1.1.2 On-Premise Deployment Guide
-by
-CyLab-Africa
 
 This guide is based on the official MOSIP deployment instructions and adapted from this and this cloudlab deployment guides. We recommend that you skim through the official guide to gain context before following this deployment guide.
-Note:
-This guide assumes that the installation should not be internet-facing and that it can only be accessed over VPN or the internal network.
-It also assumes that self-signed SSL/TLS certificates will be used.
-Hardware Setup
+
+## Note:
+1. This guide assumes that the installation should not be internet-facing and that it can only be accessed over VPN or the internal network.
+2. It also assumes that self-signed SSL/TLS certificates will be used.
+
+## 1. Hardware Setup
 Create 7 Virtual Machines (VMs) and install CentOS 7 on all of them. 
 The VMs should be created with the following compute resources:
-Component
-Number of VMs
-Configuration
-Storage
-Console
-1
-4 VCPU*, 16 GB RAM
-128 GB SSD*
-K8s MZ master
-1
-4 VCPU, 8 GB RAM
-32 GB SSD
-K8s MZ workers
-3
-4 VCPU, 16 GB RAM
-32 GB SSD
-K8s DMZ master
-1
-4 VCPU, 8 GB RAM
-32 GB SSD 
-K8s DMZ workers
-1
-4 VCPU, 16 GB RAM
-32 GB SSD
 
-* VCPU: Virtual CPU
+| Component      |Number of VMs  |Configuration       |Storage    
+| -------------  |-------------- |--------------------|---------
+| Console        | 1             | 4 VCPU*, 16 GB RAM | 128 GB SSD*
+| K8s MZ Master  | 1             | 4 VCPU, 8 GB RAM   | 32 GB SSD
+| K8s MZ workers | 3             | 4 VCPU, 16 GB RAM  | 32 GB SSD
+| K8s DMZ master | 1             | 4 VCPU, 8 GB RAM   | 32 GB SSD
+| K8s DMZ workers| 1             | 4 VCPU, 16 GB RAM  | 32 GB SSD
+
+
+*VCPU: Virtual CPU
 *SSD: Solid State Drive 
+
 Assign the following hostnames to your VMs using the command: sudo hostnamectl set-hostname <hostname>
 console.sb
 mzmaster.sb
