@@ -43,10 +43,10 @@ This guide is based on the official MOSIP deployment instructions and adapted fr
     * Add mosipuser to the sudoers
         *  `sudo usermod -aG wheel mosipuser`
     * Open the sudoers file using
-        * sudo visudo
+        * ``sudo visudo`
     * And append these lines to it to give mosipuser unlimited access and prevent applications to prompt for a password
-        * mosipuser ALL=(ALL) ALL
-        * %mosipuser ALL=(ALL) NOPASSWD:ALL
+        * `mosipuser ALL=(ALL) ALL`
+        * `%mosipuser ALL=(ALL) NOPASSWD:ALL`
 
 ## 3.Give the user ssh permissions as root to all other machines
 
