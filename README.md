@@ -9,8 +9,8 @@ This guide is based on the official MOSIP deployment instructions and adapted fr
 2. It also assumes that self-signed SSL/TLS certificates will be used.
 
 ## 1. Hardware Setup
-Create 7 Virtual Machines (VMs) and install CentOS 7 on all of them. 
-The VMs should be created with the following compute resources:
+* Create 7 Virtual Machines (VMs) and install CentOS 7 on all of them. 
+    * The VMs should be created with the following compute resources:
 
 | Component      |Number of VMs  |Configuration       |Storage    
 | -------------  |-------------- |--------------------|---------
@@ -22,16 +22,17 @@ The VMs should be created with the following compute resources:
 
 
 *VCPU: Virtual CPU
+
 *SSD: Solid State Drive 
 
-Assign the following hostnames to your VMs using the command: sudo hostnamectl set-hostname <hostname>
-console.sb
-mzmaster.sb
-mzworker0.sb
-mzworker1.sb
-mzworker2.sb
-dmzmaster.sb
-dmzworker0.sb
+* Assign the following hostnames to your VMs using the command: sudo hostnamectl set-hostname `<hostname>`
+    * console.sb
+    * mzmaster.sb
+    * mzworker0.sb
+    * mzworker1.sb
+    * mzworker2.sb
+    * dmzmaster.sb
+    * dmzworker0.sb
 Enable Internet connectivity on all machines.
 Setting up the machine environments for MOSIP
 Create a new user on the console machine
