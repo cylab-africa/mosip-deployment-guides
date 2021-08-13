@@ -21,33 +21,35 @@ This guide is based on the official MOSIP deployment instructions and adapted fr
 | K8s DMZ workers| 1             | 4 VCPU, 16 GB RAM  | 32 GB SSD
 
 
-*VCPU: Virtual CPU
+*VCPU: Virtual CPU             *SSD: Solid State Drive 
 
-*SSD: Solid State Drive 
+* Assign the following hostnames to your VMs using the command: `sudo hostnamectl set-hostname <hostname>`
+    * `console.sb`
+    * `mzmaster.sb`
+    * `mzworker0.sb`
+    * `mzworker1.sb`
+    * `mzworker2.sb`
+    * `dmzmaster.sb`
+    * `dmzworker0.sb`
 
-* Assign the following hostnames to your VMs using the command: sudo hostnamectl set-hostname `<hostname>`
-    * console.sb
-    * mzmaster.sb
-    * mzworker0.sb
-    * mzworker1.sb
-    * mzworker2.sb
-    * dmzmaster.sb
-    * dmzworker0.sb
-Enable Internet connectivity on all machines.
-Setting up the machine environments for MOSIP
-Create a new user on the console machine
-Connect to the shell of the console machine.
-Create the mosipuser account
-sudo useradd mosipuser
-sudo passwd mosipuser
-Add mosipuser to the sudoers
-sudo usermod -aG wheel mosipuser
-Open the sudoers file using
-sudo visudo
-And append these lines to it to give mosipuser unlimited access and prevent applications to prompt for a password
-mosipuser ALL=(ALL) ALL
-%mosipuser ALL=(ALL) NOPASSWD:ALL
-Give the user ssh permissions as root to all other machines
+* Enable Internet connectivity on all machines.
+
+## 2. Setting up the machine environments for MOSIP
+* Create a new user on the console machine
+    * Connect to the shell of the console machine.
+    * Create the `mosipuser` account and set its password
+        * `sudo useradd mosipuser`
+        * `sudo passwd mosipuser`
+    * Add mosipuser to the sudoers
+        *  `sudo usermod -aG wheel mosipuser`
+    * Open the sudoers file using
+        * sudo visudo
+    * And append these lines to it to give mosipuser unlimited access and prevent applications to prompt for a password
+        * mosipuser ALL=(ALL) ALL
+        * %mosipuser ALL=(ALL) NOPASSWD:ALL
+
+## 3.Give the user ssh permissions as root to all other machines
+
 Keep running these commands on the console machines:
 Switch to the mosipuser account using the password you created for it.
 su - mosipuser
