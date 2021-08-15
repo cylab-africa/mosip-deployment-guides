@@ -69,58 +69,62 @@ This guide is based on the official MOSIP deployment instructions and adapted fr
     * `ssh root@[all other hosts]`
 
 ## 4. Disable the firewall and set time to UTC on all machines
-    
-    * Run the below commands on all machines to disable their firewall
-    * sudo systemctl stop firewalld
-sudo systemctl disable firewalld
-Set the date and time of the VMs to the correct UTC time
-sudo yum install ntp ntpdate -y && sudo systemctl enable ntpd && sudo ntpdate -u -s 0.centos.pool.ntp.org 1.centos.pool.ntp.org 2.centos.pool.ntp.org && sudo systemctl restart ntpd && sudo timedatectl
-Installing dependencies and downloading the MOSIP repo
-Follow these instructions on the Console VM:
-Install Git
-sudo yum install -y git
-Clone the mosip-infra repo and switch to the appropriate branch
-$ cd ~/
-$ git clone https://github.com/mosip/mosip-infra
-$ cd mosip-infra
-$ git checkout 1.1.2
-$ cd mosip-infra/deployment/sandbox-v2
-Change ownership of the cloned repo (if not the owner)
-sudo chown -R mosipuser mosip-infra/
-Install Ansible and create shortcuts:
-./preinstall.sh
-source ~/.bashrc
-Configuring and Installing MOSIP
-Update hosts.ini as per your setup. Make sure the machine names and IP addresses match your setup.
-Follow these instructions on the Console VM
-Open group_vars/all.yml using nano mosip-infra/deployment/sandbox-v2/group_vars/all.yml and replace the following values as below:
-sandbox_domain_name: '{{inventory_hostname}}'
-site:
-  sandbox_public_url: 'https://{{sandbox_domain_name}}'
-  ssl:
-    ca: 'selfsigned'   # The ca to be used in this deployment
-Open both the files below
-nano mosip-infra/deployment/sandbox-v2/group_vars/mzcluster.yml
-nano mosip-infra/deployment/sandbox-v2/group_vars/dmzcluster.yml
-and replace the value of network_interface found in both files with ‘enp0s3’  or the configured network interface on the CentOS VMs.
-Run the ansible scripts that will install MOSIP
-cd mosip-infra/deployment/sandbox-v2/
-an site.yml
-The main MOSIP web interface can be accessed by typing the console VMs IP address / hostname into a web browser.
-To access the Pre-Registration UI after the installation is complete, use the below link:
-<your console hostname>/pre-registration-ui
-To avoid issues with the pre-registration page not loading properly. Make sure you access the page using the domain name of the console VM and not its IP Address. If you do not have a DNS server on your network to translate the console VM domain name to its IP Address, you can add a static DNS mapping of the console machine’s domain name and IP Address on your machine. In Linux/MAC, this mapping can be done in the /etc/hosts file. In Windows this can be done in the C:\Windows\System32\drivers\etc\hosts file
-While testing:
-You can connect to it using OTP and the static OTP value: 111111
-You can use this fake valid postal code: 14022
-Ansible vault
-All secrets (passwords) used by the MOSIP installation are stored in Ansible vault file secrets.yml. The default password to access the file is 'foo'. It is recommended that you change this password with following command:
-av rekey secrets.yml
-You may view and edit the contents of secrets.yml:
-av view secrets.yml
-av edit secrets.yml
-Windows Registration Client Setup
-Go through the official MOSIP Guide located here: https://docs.mosip.io/platform/modules/registration-client/registration-client-setup to familiarize yourself with the registration client functionality and installation process.
+* Run the below commands on all machines to disable their firewall
+    * `sudo systemctl stop firewalld`
+    * `sudo systemctl disable firewalld`
+* Set the date and time of the VMs to the correct UTC time
+    * `sudo yum install ntp ntpdate -y && sudo systemctl enable ntpd && sudo ntpdate -u -s 0.centos.pool.ntp.org 1.centos.pool.ntp.org 2.centos.pool.ntp.org && sudosystemctl restart ntpd && sudo timedatectl`
+
+## 5. Installing dependencies and downloading the MOSIP repo
+* Follow these instructions on the Console VM:
+    * Install Git
+        `sudo yum install -y git`
+    * Clone the mosip-infra repo and switch to the appropriate branch
+        `cd ~/`
+        `git clone https://github.com/mosip/mosip-infra`
+        `cd mosip-infra`
+        `git checkout 1.1.2`
+        `cd mosip-infra/deployment/sandbox-v2`
+    * Change ownership of the cloned repo (if not the owner)
+        `sudo chown -R mosipuser mosip-infra/`
+    * Install Ansible and create shortcuts:
+        `./hpreinstall.sh`
+        `source ~/.bashrc`
+
+## 6. Configuring and Installing MOSIP
+* Update hosts.ini as per your setup. Make sure the machine names and IP addresses match your setup.
+* Follow these instructions on the Console VM
+    * Open group_vars/all.yml using `nano mosip-infra/deployment/sandbox-v2/group_vars/all.yml` and replace the following values as below:
+        `sandbox_domain_name: '{{inventory_hostname}}'`
+        `site:`
+         `sandbox_public_url: 'https://{{sandbox_domain_name}}'`
+        `ssl:`
+         `ca: 'selfsigned'`   # The ca to be used in this deployment
+* Open both of the files below
+    `nano mosip-infra/deployment/sandbox-v2/group_vars/mzcluster.yml`
+    `nano mosip-infra/deployment/sandbox-v2/group_vars/dmzcluster.yml`
+    and replace the value of `network_interface` found in both files with `enp0s3`  or the configured network interface on the CentOS VMs.
+* Run the ansible scripts that will install MOSIP
+    `cd mosip-infra/deployment/sandbox-v2/`
+    `an site.yml`
+* The main MOSIP web interface can be accessed by typing the console VMs IP address / hostname into a web browser.
+* To access the Pre-Registration UI after the installation is complete, use the below link:
+    * `<your console hostname>/pre-registration-ui`
+    * To avoid issues with the pre-registration page not loading properly. Make sure you access the page using the domain name of the console VM and not its IP Address. If you do not have a DNS server on your network to translate the console VM domain name to its IP Address, you can add a static DNS mapping of the console machine’s domain name and IP Address on your machine. In Linux/MAC, this mapping can be done in the /etc/hosts file. In Windows this can be done in the C:\Windows\System32\drivers\etc\hosts file.
+
+* While testing:
+    * You can connect to it using OTP and the static OTP value: `111111`
+    * You can use this fake valid postal code: `14022`
+
+## 7. Ansible vault
+* All secrets (passwords) used by the MOSIP installation are stored in Ansible vault file `secrets.yml`. The default password to access the file is `foo`. It is recommended that you change this password with following command:
+    `av rekey secrets.yml`
+* You may view and edit the contents of secrets.yml:
+    `av view secrets.yml`
+    `av edit secrets.yml`
+
+## 8. Windows Registration Client Setup
+* Go through the official MOSIP Guide located here: https://docs.mosip.io/platform/modules/registration-client/registration-client-setup to familiarize yourself with the registration client functionality and installation process.
 Set "mosip.hostname" environment variable on your machine with the host name of the console VM.
 On the console VM, copy the maven-metadata.xml file from /home/mosipuser/mosip-infra/deployment/sandbox-v2/roles/reg-client-prep/templates/ to /usr/share/nginx/html/
 Login to the console VM and change the configs of the file: /home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/registration/registration/registration-libs/src/main/resources/props/mosip-application.properties to the below configuration:
