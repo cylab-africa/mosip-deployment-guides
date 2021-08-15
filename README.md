@@ -113,17 +113,143 @@ This guide is based on the official MOSIP deployment [https://github.com/mosip/m
     * To avoid issues with the pre-registration page not loading properly. Make sure you access the page using the domain name of the console VM and not its IP Address. If you do not have a DNS server on your network to translate the console VM domain name to its IP Address, you can add a static DNS mapping of the console machine’s domain name and IP Address on your machine. In Linux/MAC, this mapping can be done in the /etc/hosts file. In Windows this can be done in the C:\Windows\System32\drivers\etc\hosts file.
 
 * While testing:
-    * You can connect to it using OTP and the static OTP value: `111111`
+    * You can connect to it using OTP and the static OTP value: `111111`. To set up random OTPs to be sent to the user's email, see the below email configuration instructions.
     * You can use this fake valid postal code: `14022`
 
-## 7. Ansible vault
+## 7. Email Configuration
+### 7.1 References 
+1. OTP Email Settings: https://docs.mosip.io/platform/build-and-deploy/sandbox-installer#otp-setting
+2. OTP Notification Services: https://docs.mosip.io/platform/modules/kernel/common-services-functionality#notification
+
+### 7.2 Configuration files to be Edited
+1. kernel-mz.properties (Configure email OTP)
+    ```
+    mosip.kernel.notification.email.from=emailfrom
+    spring.mail.host=smtphost
+    spring.mail.username=username
+    spring.mail.password=password
+
+    ```
+2. application-mz.properties (Disable Proxy OTP settings so default OTP is not allowed)
+
+```
+    mosip.kernel.sms.proxy-sms=true
+    mosip.kernel.auth.proxy-otp=true
+    mosip.kernel.auth.proxy-email=true
+```
+
+Configuration files are located in: `/srv/nfs/mosip/mosip-config/sandbox/`
+
+### 7.3 Configuration Steps
+
+1. Configure Email SMTP in `kernel-mz.properties`. Current SMTP server running unsecure services at port 587 hence TLS has been disabled
+
+```
+[root@console sandbox]# cat kernel-mz.properties | grep spring.mail
+spring.mail.host=mail.acelma.com
+spring.mail.username=mosip@acelma.com
+spring.mail.password=<password>
+spring.mail.port=587
+spring.mail.properties.mail.transport.protocol=smtp
+spring.mail.properties.mail.smtp.starttls.required=false
+spring.mail.properties.mail.smtp.starttls.enable=false
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.debug=false
+```
+
+2. Disable Proxy OTP settings
+
+```
+[root@console sandbox]# vi application-mz.properties
+mosip.kernel.sms.proxy-sms=false
+mosip.kernel.auth.proxy-otp=false
+mosip.kernel.auth.proxy-email=false
+```
+
+3. Commit the changes done in the configuration files for the changes to take effect
+   1. checking git status
+
+        ```
+        [mosipuser@console ~]$ cd /srv/nfs/mosip/mosip-config
+        [mosipuser@console mosip-config]$ git status
+        ```
+
+   2. commit config changes
+
+        ```
+        [mosipuser@console mosip-config]$ sudo git commit -am "smtp details added"
+        ```
+
+4. Restart Kernel Notification and OTP Manager Services
+
+   1. Identify the containers running these services
+
+        ```
+        [mosipuser@console ~]$ kc1 get pods -A
+        NAMESPACE              NAME                                                        READY   STATUS    RESTARTS   AGE
+        default                activemq-5dc5dc7c86-sbdt4                                   1/1     Running   1          32d
+        default                admin-service-fbf5996f8-8lhlp                               1/1     Running   0          32d
+        default                admin-ui-6bb7f9957f-82pcj                                   1/1     Running   0          32d
+        .
+        .
+        .
+        [mosipuser@console ~]$
+        ```
+
+    2. Restart the containers/pods, both notification and OTP Manager
+
+        ```
+        [mosipuser@console mosip-config]$ kc1 delete pod <name>
+        pod "<name>" deleted
+        [mosipuser@console mosip-config]$
+        ```
+
+5. OTP tests can be done to confirm successful configuration
+
+
+### 7.4 Troubleshooting Tips
+1. Testing connection from Kernel notification service container
+
+    ````
+    [mosipuser@console ~]$ kc1 exec -it kernel-notification-service-8465bff54f-t6tjf /bin/bash
+    kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+    root@kernel-notification-service-8465bff54f-t6tjf:/# ping mail.acelma.com
+    PING acelma.com (209.99.16.30) 56(84) bytes of data.
+    64 bytes from md-87.webhostbox.net (209.99.16.30): icmp_seq=1 ttl=43 time=338 ms
+    64 bytes from md-87.webhostbox.net (209.99.16.30): icmp_seq=2 ttl=43 time=330 ms
+    64 bytes from md-87.webhostbox.net (209.99.16.30): icmp_seq=3 ttl=43 time=334 ms
+    64 bytes from md-87.webhostbox.net (209.99.16.30): icmp_seq=4 ttl=44 time=336 ms
+    64 bytes from md-87.webhostbox.net (209.99.16.30): icmp_seq=5 ttl=43 time=336 ms
+    ^C
+    --- acelma.com ping statistics ---
+    6 packets transmitted, 5 received, 16.6667% packet loss, time 25ms
+    rtt min/avg/max/mdev = 330.233/334.524/337.539/2.581 ms
+    root@kernel-notification-service-8465bff54f-t6tjf:/#
+    ````
+
+2. Test if telnet to the SMTP Port works fine as well from within Notification container
+
+    ````
+    root@kernel-notification-service-8465bff54f-t6tjf:/etc/apt# telnet mail.acelma.com 587
+    Trying 209.99.16.30...
+    Connected to acelma.com.
+    Escape character is '^]'.
+    ````
+
+3. Monitor live logs
+
+    ```
+    kc1 logs -f <name of container>
+    ```
+
+## 8. Ansible vault
 * All secrets (passwords) used by the MOSIP installation are stored in Ansible vault file `secrets.yml`. The default password to access the file is `foo`. It is recommended that you change this password with following command:
     `av rekey secrets.yml`
 * You may view and edit the contents of secrets.yml:
     * `av view secrets.yml`
     * `av edit secrets.yml`
 
-## 8. Windows Registration Client Setup
+## 9. Windows Registration Client Setup
 * Go through the official MOSIP Guide located here: `https://docs.mosip.io/platform/modules/registration-client/registration-client-setup` to familiarize yourself with the registration client functionality and installation process.
 * Set `mosip.hostname` environment variable on your machine with the host name of the console VM.
 * On the console VM, copy the maven-metadata.xml file from `/home/mosipuser/mosip-infra/deployment/sandbox-v2/roles/reg-client-prep/templates/ to /usr/share/nginx/html/`
@@ -154,7 +280,7 @@ mosip.reg.client.url=https\://console VM hostname/registration-client/1.1.2/reg-
 * Then, cd to `/home/mosipuser/mosip-infra/deployment/sandbox-v2/test/regclient` and run the script: `./update_masterdb.sh /home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/commons/db_scripts/mosip_master`
 * After doing the above, you can login to the Windows client using the username `11011` and password `mosip`. You will see an application restart prompt. Close the application and rerun the run.bat file. This time, login with the username `110118` and password `Techno@123`
   
-## 9. Appendix - Known Installation Issues
+## 10. Appendix - Known Installation Issues
 ### Error 1
 #### Output
 ```
