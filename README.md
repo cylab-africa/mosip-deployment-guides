@@ -12,13 +12,13 @@ This guide is based on the official MOSIP deployment instructions and adapted fr
 * Create 7 Virtual Machines (VMs) and install CentOS 7 on all of them. 
     * The VMs should be created with the following compute resources:
 
-| Component      |Number of VMs  |Configuration       |Storage    
-| -------------  |-------------- |--------------------|---------
-| Console        | 1             | 4 VCPU*, 16 GB RAM | 128 GB SSD*
-| K8s MZ Master  | 1             | 4 VCPU, 8 GB RAM   | 32 GB SSD
-| K8s MZ workers | 3             | 4 VCPU, 16 GB RAM  | 32 GB SSD
-| K8s DMZ master | 1             | 4 VCPU, 8 GB RAM   | 32 GB SSD
-| K8s DMZ workers| 1             | 4 VCPU, 16 GB RAM  | 32 GB SSD
+| Component       | Number of VMs | Configuration      | Storage     |
+| --------------- | ------------- | ------------------ | ----------- |
+| Console         | 1             | 4 VCPU*, 16 GB RAM | 128 GB SSD* |
+| K8s MZ Master   | 1             | 4 VCPU, 8 GB RAM   | 32 GB SSD   |
+| K8s MZ workers  | 3             | 4 VCPU, 16 GB RAM  | 32 GB SSD   |
+| K8s DMZ master  | 1             | 4 VCPU, 8 GB RAM   | 32 GB SSD   |
+| K8s DMZ workers | 1             | 4 VCPU, 16 GB RAM  | 32 GB SSD   |
 
 
 *VCPU: Virtual CPU             *SSD: Solid State Drive 
@@ -124,10 +124,12 @@ This guide is based on the official MOSIP deployment instructions and adapted fr
     * `av edit secrets.yml`
 
 ## 8. Windows Registration Client Setup
-* Go through the official MOSIP Guide located here: https://docs.mosip.io/platform/modules/registration-client/registration-client-setup to familiarize yourself with the registration client functionality and installation process.
-Set "mosip.hostname" environment variable on your machine with the host name of the console VM.
-On the console VM, copy the maven-metadata.xml file from /home/mosipuser/mosip-infra/deployment/sandbox-v2/roles/reg-client-prep/templates/ to /usr/share/nginx/html/
-Login to the console VM and change the configs of the file: /home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/registration/registration/registration-libs/src/main/resources/props/mosip-application.properties to the below configuration:
+* Go through the official MOSIP Guide located here: `https://docs.mosip.io/platform/modules/registration-client/registration-client-setup` to familiarize yourself with the registration client functionality and installation process.
+* Set `mosip.hostname` environment variable on your machine with the host name of the console VM.
+* On the console VM, copy the maven-metadata.xml file from `/home/mosipuser/mosip-infra/deployment/sandbox-v2/roles/reg-client-prep/templates/ to /usr/share/nginx/html/`
+* Login to the console VM and change the configs of the file: `/home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/registration/registration/registration-libs/src/main/resources/props/mosip-application.properties` to the below configuration:
+
+```
 mosip.reg.healthcheck.url=https\://<console VM hostname>/v1/authmanager/actuator/health
 mosip.reg.rollback.path=../BackUp
 mosip.reg.cerpath=/cer//mosip_cer.cer
@@ -142,6 +144,8 @@ mosip.reg.mdm.server.port=8080
 mosip.reg.version=1.1.2-rc2
 mosip.reg.packetstorepath=../PacketStore
 mosip.reg.client.url=https\://console VM hostname/registration-client/1.1.2/reg-client.zip
+```
+
 
 Download the client zip file from https://<your console hostname>/registration-client/1.1.2/reg-client.zip
 Unzip the downloaded client
