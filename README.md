@@ -1,7 +1,47 @@
-# MOSIP Sandbox-v2 1.1.2 On-Premise Detailed Deployment Guide
-## by: CyLab-Africa
+**MOSIP Sandbox-v2 1.1.2 On-Premise Detailed Deployment Guide**
+**by: CyLab-Africa**
+
+Table of Contents  
+- [Introduction](#introduction)
+- [Note:](#note)
+- [1. Hardware Setup](#1-hardware-setup)
+- [2. Setting up the machine environments for MOSIP](#2-setting-up-the-machine-environments-for-mosip)
+- [3.Give the user ssh permissions as root to all other machines](#3give-the-user-ssh-permissions-as-root-to-all-other-machines)
+- [4. Disable the firewall and set time to UTC on all machines](#4-disable-the-firewall-and-set-time-to-utc-on-all-machines)
+- [5. Installing dependencies and downloading the MOSIP repo](#5-installing-dependencies-and-downloading-the-mosip-repo)
+- [6. Configuring and Installing MOSIP](#6-configuring-and-installing-mosip)
+- [7. Email Configuration](#7-email-configuration)
+  - [7.1 References](#71-references)
+  - [7.2 Configuration files to be Edited](#72-configuration-files-to-be-edited)
+  - [7.3 Configuration Steps](#73-configuration-steps)
+  - [7.4 Troubleshooting Tips](#74-troubleshooting-tips)
+- [8. Ansible vault](#8-ansible-vault)
+- [9. Windows Registration Client Setup](#9-windows-registration-client-setup)
+- [10. Appendix - Known Installation Issues](#10-appendix---known-installation-issues)
+  - [Error 1](#error-1)
+    - [Output](#output)
+    - [Fix](#fix)
+  - [Error2](#error2)
+    - [Output](#output-1)
+    - [Fix](#fix-1)
+  - [Error 3](#error-3)
+    - [Output](#output-2)
+    - [Fix](#fix-2)
+  - [Error 4](#error-4)
+    - [Output](#output-3)
+    - [Fix](#fix-3)
+  - [Error 5](#error-5)
+    - [Fix](#fix-4)
+  - [Error 6](#error-6)
+    - [Fix](#fix-5)
+  - [Error 7](#error-7)
+    - [Output 'Failed: No Internet Connection' on Windows Reg-lient](#output-failed-no-internet-connection-on-windows-reg-lient)
+    - [Fix:](#fix-6)
+  - [Error 8](#error-8)
+    - [Output: `Failed: Sync Configuration Failure`](#output-failed-sync-configuration-failure)
 
 
+## Introduction
 This guide is based on the official MOSIP deployment [https://github.com/mosip/mosip-infra/tree/1.1.2/deployment/sandbox-v2] instructions and adapted from this [https://github.com/fretbuzz/MOSIP-Setup-Instructions/blob/main/MOSIP%20Deployment%20Guide.pdf] and this [https://github.com/luker983/MOSIP-Setup-Instructions/tree/1.1.2] cloudlab deployment guides. We recommend that you skim through the official guide to gain context before following this deployment guide.
 
 ## Note:
