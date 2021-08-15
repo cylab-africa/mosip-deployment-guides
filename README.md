@@ -78,35 +78,35 @@ This guide is based on the official MOSIP deployment instructions and adapted fr
 ## 5. Installing dependencies and downloading the MOSIP repo
 * Follow these instructions on the Console VM:
     * Install Git
-        `sudo yum install -y git`
+        * `sudo yum install -y git`
     * Clone the mosip-infra repo and switch to the appropriate branch
-        `cd ~/`
-        `git clone https://github.com/mosip/mosip-infra`
-        `cd mosip-infra`
-        `git checkout 1.1.2`
-        `cd mosip-infra/deployment/sandbox-v2`
+        * `cd ~/`
+        * `git clone https://github.com/mosip/mosip-infra`
+        * `cd mosip-infra`
+        * `git checkout 1.1.2`
+        * `cd mosip-infra/deployment/sandbox-v2`
     * Change ownership of the cloned repo (if not the owner)
-        `sudo chown -R mosipuser mosip-infra/`
+        * `sudo chown -R mosipuser mosip-infra/`
     * Install Ansible and create shortcuts:
-        `./hpreinstall.sh`
-        `source ~/.bashrc`
+        * `./hpreinstall.sh`
+        * `source ~/.bashrc`
 
 ## 6. Configuring and Installing MOSIP
 * Update hosts.ini as per your setup. Make sure the machine names and IP addresses match your setup.
 * Follow these instructions on the Console VM
     * Open group_vars/all.yml using `nano mosip-infra/deployment/sandbox-v2/group_vars/all.yml` and replace the following values as below:
-        `sandbox_domain_name: '{{inventory_hostname}}'`
-        `site:`
-         `sandbox_public_url: 'https://{{sandbox_domain_name}}'`
-        `ssl:`
-         `ca: 'selfsigned'`   # The ca to be used in this deployment
+        * `sandbox_domain_name: '{{inventory_hostname}}'`
+        * `site:`
+        * `sandbox_public_url: 'https://{{sandbox_domain_name}}'`
+        * `ssl:`
+        * `ca: 'selfsigned'`   # The ca to be used in this deployment
 * Open both of the files below
-    `nano mosip-infra/deployment/sandbox-v2/group_vars/mzcluster.yml`
-    `nano mosip-infra/deployment/sandbox-v2/group_vars/dmzcluster.yml`
+    * `nano mosip-infra/deployment/sandbox-v2/group_vars/mzcluster.yml`
+    * `nano mosip-infra/deployment/sandbox-v2/group_vars/dmzcluster.yml`
     and replace the value of `network_interface` found in both files with `enp0s3`  or the configured network interface on the CentOS VMs.
 * Run the ansible scripts that will install MOSIP
-    `cd mosip-infra/deployment/sandbox-v2/`
-    `an site.yml`
+    * `cd mosip-infra/deployment/sandbox-v2/`
+    * `an site.yml`
 * The main MOSIP web interface can be accessed by typing the console VMs IP address / hostname into a web browser.
 * To access the Pre-Registration UI after the installation is complete, use the below link:
     * `<your console hostname>/pre-registration-ui`
@@ -120,8 +120,8 @@ This guide is based on the official MOSIP deployment instructions and adapted fr
 * All secrets (passwords) used by the MOSIP installation are stored in Ansible vault file `secrets.yml`. The default password to access the file is `foo`. It is recommended that you change this password with following command:
     `av rekey secrets.yml`
 * You may view and edit the contents of secrets.yml:
-    `av view secrets.yml`
-    `av edit secrets.yml`
+    * `av view secrets.yml`
+    * `av edit secrets.yml`
 
 ## 8. Windows Registration Client Setup
 * Go through the official MOSIP Guide located here: https://docs.mosip.io/platform/modules/registration-client/registration-client-setup to familiarize yourself with the registration client functionality and installation process.
