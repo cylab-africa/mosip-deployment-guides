@@ -50,26 +50,28 @@ This guide is based on the official MOSIP deployment instructions and adapted fr
 
 ## 3.Give the user ssh permissions as root to all other machines
 
-Keep running these commands on the console machines:
-Switch to the mosipuser account using the password you created for it.
-su - mosipuser
-Generate the ssh keys (just tap return three times)
-ssh-keygen -t rsa
-And copy the ssh public key to clipboard manually (ctrl+c; copying using mouse or browser causes issues later on when pasting, so don’t do it! )
-cat .ssh/id_rsa.pub
-Store the ssh keys in the authorized keys of the console VM and the root of all other VMs:
-Run this on the console machine and add the copied ssh public key to the file
-nano .ssh/authorized_keys
-Then change the permissions
-chmod 644 .ssh/authorized_keys
-Run this on all other machines and add the copied ssh public key to the file 
-sudo nano /root/.ssh/authorized_keys
-Test if the ssh keys were shared correctly by running the below commands on the console machine.
-ssh mosipuser@console
-ssh root@[all other hosts]
-Disable the firewall and set time to UTC on all machines
-Run the below commands on all machines to disable their firewall
-sudo systemctl stop firewalld
+* Keep running these commands on the console machines:
+    * Switch to the mosipuser account using the password you created for it.
+        * `su - mosipuser`
+* Generate the ssh keys (just tap return three times)
+    * `ssh-keygen -t rsa`
+* And copy the ssh public key to clipboard manually (ctrl+c; copying using mouse or browser causes issues later on when pasting, so don’t do it! )
+    * `cat .ssh/id_rsa.pub`
+* Store the ssh keys in the authorized keys of the console VM and the root of all other VMs:
+    * Run this on the console machine and add the copied ssh public key to the file
+        *  `nano .ssh/authorized_keys`
+    * Then change the permissions
+        * `chmod 644 .ssh/authorized_keys`
+    * Run this on all other machines and add the copied ssh public key to the file 
+        * `sudo nano /root/.ssh/authorized_keys`
+* Test if the ssh keys were shared correctly by running the below commands on the console machine.
+    * `ssh mosipuser@console`
+    * `ssh root@[all other hosts]`
+
+## 4. Disable the firewall and set time to UTC on all machines
+    
+    * Run the below commands on all machines to disable their firewall
+    * sudo systemctl stop firewalld
 sudo systemctl disable firewalld
 Set the date and time of the VMs to the correct UTC time
 sudo yum install ntp ntpdate -y && sudo systemctl enable ntpd && sudo ntpdate -u -s 0.centos.pool.ntp.org 1.centos.pool.ntp.org 2.centos.pool.ntp.org && sudo systemctl restart ntpd && sudo timedatectl
