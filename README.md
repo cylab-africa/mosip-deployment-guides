@@ -2,7 +2,7 @@
 ## by: CyLab-Africa
 
 
-This guide is based on the official MOSIP deployment [https://github.com/mosip/mosip-infra/tree/1.1.2/deployment/sandbox-v2] instructions and adapted from this [https://docs.google.com/document/d/1to6tYr07FkevTdd1U5b2YQM97iO_GtHA/edit#] and this [https://github.com/luker983/MOSIP-Setup-Instructions/tree/1.1.2] cloudlab deployment guides. We recommend that you skim through the official guide to gain context before following this deployment guide.
+This guide is based on the official MOSIP deployment [https://github.com/mosip/mosip-infra/tree/1.1.2/deployment/sandbox-v2] instructions and adapted from this [https://github.com/fretbuzz/MOSIP-Setup-Instructions/blob/main/MOSIP%20Deployment%20Guide.pdf] and this [https://github.com/luker983/MOSIP-Setup-Instructions/tree/1.1.2] cloudlab deployment guides. We recommend that you skim through the official guide to gain context before following this deployment guide.
 
 ## Note:
 1. This guide assumes that the installation should not be internet-facing and that it can only be accessed over VPN or the internal network.
