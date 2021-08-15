@@ -146,73 +146,91 @@ mosip.reg.packetstorepath=../PacketStore
 mosip.reg.client.url=https\://console VM hostname/registration-client/1.1.2/reg-client.zip
 ```
 
-
-Download the client zip file from https://<your console hostname>/registration-client/1.1.2/reg-client.zip
-Unzip the downloaded client
-Execute the run.bat file inside the unzipped folder.
-Once the above file is execute, certain keys are generated and stored under this file: C:\Users\<Your User Name>\.mosipkeys\readme
-Copy the machine name, public key, and key index values together with other details about your machine such as MAC Address, Serial Number, and IP address and append them to this file: /home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/commons/db_scripts/mosip_master/dml/master-machine_master.csv located on the MOSIP console VM.
-cd to /home/mosipuser/mosip-infra/deployment/sandbox-v2/test/regclient and run the script: ./update_masterdb.sh /home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/commons/db_scripts/mosip_master
-After doing the above, you can login to the Windows client using the username 11011 and password mosip. You will see an application restart prompt. Close the application and rerun the run.bat file. This time, login with the username 110118 and password Techno@123
-Appendix - Known Installation Issues
-Error 1
-Output
+* Download the client zip file from `https://<your console hostname>/registration-client/1.1.2/reg-client.zip`
+* Unzip the downloaded client
+* Execute the run.bat file inside the unzipped folder.
+* Once the above file is executed, certain keys are generated and stored under this file:  `C:\Users\<Your User Name>\.mosipkeys\readme`
+* Copy the machine name, public key, and key index values together with other details about your machine such as MAC Address, Serial Number, and IP address and append them to this file: `/home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/commons/db_scripts/mosip_master/dml/master-machine_master.csv` located on the MOSIP console VM.
+* Then, cd to `/home/mosipuser/mosip-infra/deployment/sandbox-v2/test/regclient` and run the script: `./update_masterdb.sh /home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/commons/db_scripts/mosip_master`
+* After doing the above, you can login to the Windows client using the username `11011` and password `mosip`. You will see an application restart prompt. Close the application and rerun the run.bat file. This time, login with the username `110118` and password `Techno@123`
+  
+## 9. Appendix - Known Installation Issues
+### Error 1
+#### Output
+```
 TASK [k8scluster/cni : Create flannel network daemonset] ***************************************************************************************************
 fatal: [dmzmaster.sb -> 172.29.108.22]: FAILED! => {"changed": true, "cmd": ["kubectl", "apply", "--kubeconfig=/etc/kubernetes/admin.conf", "-f", "/etc/kubernetes/network/"], "delta": "0:00:00.083852", "end": "2021-04-27 13:42:54.099146", "msg": "non-zero return code", "rc": 1, "start": "2021-04-27 13:42:54.015294", "stderr": "The connection to the server 172.29.108.22:6443 was refused - did you specify the right host or port?", "stderr_lines": ["The connection to the server 172.29.108.22:6443 was refused - did you specify the right host or port?"], "stdout": "", "stdout_lines": []}
-Fix
-Run the following commands on dmzmaster.sb (or on the node where the error happened):
+```
+#### Fix
+* Run the following commands on dmzmaster.sb (or on the node where the error happened):
+```
 systemctl stop docker && systemctl stop kubelet
 kubeadm reset
 rm -rf /etc/cni/net.d
 rm -rf  $HOME/.kube/config
-Error2
-Output
+```
+### Error2
+#### Output
+```
 TASK [packages/helm-cli: Add stable repo]
 fatal: [console]: FAILED! => {"changed": true, "cmd": "/home/mosipuser/bin/helm repo add stable https://kubernetes-charts.storage.googleapis.com", "delta": "0:00:00.238782", "end": "2021-04-21 09:54:07.660850", "msg": "non-zero return code", "rc": 1, "start": "2021-04-21 09:54:07.422068", "stderr": "Error: looks like \"https://kubernetes-charts.storage.googleapis.com\" is not a valid chart repository or cannot be reached: failed to fetch https://kubernetes-charts.storage.googleapis.com/index.yaml : 403 Forbidden", "stderr_lines": ["Error: looks like \"https://kubernetes-charts.storage.googleapis.com\" is not a valid chart repository or cannot be reached: failed to fetch https://kubernetes-charts.storage.googleapis.com/index.yaml : 403 Forbidden"], "stdout": "", "stdout_lines": []}
-Fix
-Refer to: https://stackoverflow.com/a/65404574/15117449
-In roles/packages/helm-cli/tasks/main.yml, replace the stable repo https://kubernetes-charts.storage.googleapis.com with https://charts.helm.sh/stable
-Error 3
-Output
+```
+
+#### Fix
+* Refer to: https://stackoverflow.com/a/65404574/15117449
+* In roles/packages/helm-cli/tasks/main.yml, replace the stable repo https://kubernetes-charts.storage.googleapis.com with https://charts.helm.sh/stable
+
+### Error 3
+#### Output
+```
 TASK [packages/crypto : Install python3 cryptography]
 fatal: [console]: FAILED! => {"changed": false, "cmd": ["/bin/pip3", "install", "cryptography"], "msg": "stdout: Collecting cryptography\n  Downloading https://files.pythonhosted.org/packages/9b/77/461087a514d2e8ece1c975d8216bc03f7048e6090c5166bc34115afdaa53/cryptography-3.4.7.tar.gz (546kB)\n Complete output from command python setup.py egg_info:\n        	\n    	 =============================DEBUG ASSISTANCE==========================\n          	If you are seeing an error here please try the following to\n               	successfully install cryptography:\n	\n    	        	Upgrade to the latest pip and try again. This will fix errors for most\n                	users. See: https://pip.pypa.io/en/stable/installing/#upgrading-pip\n    	        	=============================DEBUG ASSISTANCE==========================\n \n     	Traceback (most recent call last):\n  	File \"<string>\", line 1, in <module>\n       	File \"/tmp/pip-build-ifd1g9v2/cryptography/setup.py\", line 14, in <module>\n	 from setuptools_rust import RustExtension\n       	ModuleNotFoundError: No module named 'setuptools_rust'\n   	\n     	----------------------------------------\n\n:stderr: WARNING: Running pip install with root privileges is generally not a good idea. Try `pip3 install --user` instead.\nCommand \"python setup.py egg_info\" failed with error code 1 in /tmp/pip-build-ifd1g9v2/cryptography/\n"}
-Fix
-			pip3 install --upgrade pip
+```
+#### Fix
+```
+pip3 install --upgrade pip
 pip3 install cryptography
-a.	.source /home/mosipuser/.venv-py3/bin/activate
-b.	python3 -m pip install setuptools_rust
-c.	pip install --upgrade pip
-d.	python3 -m pip install certbot
-e.	Deactivate
-
-Error 4
-Output
+	.source /home/mosipuser/.venv-py3/bin/activate
+	python3 -m pip install setuptools_rust
+	pip install --upgrade pip
+	python3 -m pip install certbot
+	Deactivate
+```
+### Error 4
+#### Output
+```
 TASK [k8scluster/kubernetes/master : Init Kubernetes cluster]
 fatal: [mzmaster]: FAILED! => {"changed": true, "cmd": "kubeadm init --service-cidr 10.96.0.0/12     	   	--kubernetes-version v1.19.0     		--pod-network-cidr 10.244.0.0/16     		--token b0f7b8.8d1767876297d85c     	  	--apiserver-advertise-address 172.17.33.3                  	 \n", "delta": "0:00:00.476187", "end": "2021-04-21 11:09:42.787299", "msg": "non-zero return code", "rc": 1, "start": "2021-04-21 11:09:42.311112", "stderr": "this version of kubeadm only supports deploying clusters with the control plane version >= 1.20.0. Current version: v1.19.0\nTo see the stack trace of this error execute with --v=5 or higher", "stderr_lines": ["this version of kubeadm only supports deploying clusters with the control plane version >= 1.20.0. Current version: v1.19.0", "To see the stack trace of this error execute with --v=5 or higher"], "stdout": "", "stdout_lines": []}
-Fix
-Replace package names with package-name-1.19.0 in roles/k8scluster/kubernetes/node/meta/main.yml and roles/k8scluster/kubernetes/master/meta/main.yml, e.g., “kubeadm-1.19.0”, then add allow_downgrade: true to the apt section of RHEL/Centos pkg install in roles/k8scluster/commons/pre-install/tasks/pkg.yml
-Error 5
+```
+#### Fix
+* Replace package names with `package-name-1.19.0` in `roles/k8scluster/kubernetes/node/meta/main.yml` and `roles/k8scluster/kubernetes/master/meta/main.yml`, e.g., `kubeadm-1.19.0`, then add `allow_downgrade: true` to the apt section of RHEL/Centos pkg install in `roles/k8scluster/commons/pre-install/tasks/pkg.yml`
+
+### Error 5
 The admin helm release fails to deploy.
-Fix: The docker image version for the admin playbook is incorrect. Find the relevant docker images in versions.yml, replace 1.1.3 with 1.1.2
-Error 6
+#### Fix
+* The docker image version for the admin playbook is incorrect. Find the relevant docker images in `versions.yml` file, replace `1.1.3` with `1.1.2`
+
+### Error 6
 Default OTP of 111111 is not valid on the pre-registration-ui as shown below
 	
-Fix
+#### Fix
 Make sure all the VM clocks are synchronized and set to the correct UTC date and time.
-If the above does not work, Reinstall the Keycloak helm release by running helm1 delete keycloak and then an playbooks/keycloak.yml
-Error 7
-Output 'Failed: No Internet Connection' on Windows Reg-lient
+If the above does not work, Reinstall the Keycloak helm release by running helm1 delete keycloak and then `an playbooks/keycloak.yml`
+
+### Error 7
+#### Output 'Failed: No Internet Connection' on Windows Reg-lient
 
 
 
-Fix:
-Generate a new self-signed certificate for nginx and adding console.sb as the certificate's Common Name (CN). The reason being, by default, MOSIP uses the server's IP address as the CN when it is generating the self-signed certificate and as mentioned here: https://stackoverflow.com/questions/29157861/java-certificateexception-no-subject-alternative-names-matching-ip-address and here: https://web.archive.org/web/20160201235032/http://www.jroller.com/hasant/entry/no_subject_alternative_names_matching , JAVA has issues with using an IP address as a CN in certificates. Here is a link on how to generate a self-signed certificate for nginx: https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-on-centos-7. This should not be an issue when using a CA-issued certificate since this is issued to the domain name registered under MOSIP and not the IP address.
-Error 8
-Output: Failed: Sync Configuration Failure
+#### Fix:
+Generate a new self-signed certificate for nginx and adding `console.sb` as the certificate's `Common Name (CN)`. The reason being, by default, MOSIP uses the server's IP address as the CN when it is generating the self-signed certificate and as mentioned here: https://stackoverflow.com/questions/29157861/java-certificateexception-no-subject-alternative-names-matching-ip-address and here: https://web.archive.org/web/20160201235032/http://www.jroller.com/hasant/entry/no_subject_alternative_names_matching , JAVA has issues with using an IP address as a CN in certificates. Here is a link on how to generate a self-signed certificate for nginx: https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-on-centos-7. This should not be an issue when using a trusted CA-issued certificate since this is issued to the domain name registered under MOSIP and not the IP address.
+
+### Error 8
+#### Output: `Failed: Sync Configuration Failure`
 
 
 
-Thi is related to your machine details not added to the mosip_master database. Add your machine details in the master-machine_master.csv file and ran the update_masterdb.sh script to update the details in the database. The reg-client application should restart and you should be able to login with the user 110118 and Password Techno@123.
+Thi is related to your machine details not added to the `mosip_master` database. Add your machine details in the `master-machine_master.csv` file and run the `update_masterdb.sh` script to update the details in the database. The reg-client application should restart and you should be able to login with the user `110118` and Password `Techno@123`.
 
 
 
