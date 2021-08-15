@@ -2,7 +2,7 @@
 ## by: CyLab-Africa
 
 
-This guide is based on the official MOSIP deployment instructions and adapted from this and this cloudlab deployment guides. We recommend that you skim through the official guide to gain context before following this deployment guide.
+This guide is based on the official MOSIP deployment [https://github.com/mosip/mosip-infra/tree/1.1.2/deployment/sandbox-v2] instructions and adapted from this [https://docs.google.com/document/d/1to6tYr07FkevTdd1U5b2YQM97iO_GtHA/edit#] and this [https://github.com/luker983/MOSIP-Setup-Instructions/tree/1.1.2] cloudlab deployment guides. We recommend that you skim through the official guide to gain context before following this deployment guide.
 
 ## Note:
 1. This guide assumes that the installation should not be internet-facing and that it can only be accessed over VPN or the internal network.
@@ -43,7 +43,7 @@ This guide is based on the official MOSIP deployment instructions and adapted fr
     * Add mosipuser to the sudoers
         *  `sudo usermod -aG wheel mosipuser`
     * Open the sudoers file using
-        * ``sudo visudo`
+        * `sudo visudo`
     * And append these lines to it to give mosipuser unlimited access and prevent applications to prompt for a password
         * `mosipuser ALL=(ALL) ALL`
         * `%mosipuser ALL=(ALL) NOPASSWD:ALL`
@@ -212,23 +212,22 @@ The admin helm release fails to deploy.
 
 ### Error 6
 Default OTP of 111111 is not valid on the pre-registration-ui as shown below
-	
+
+![alt text](https://user-images.githubusercontent.com/17492419/120472756-92cfa000-c3a6-11eb-857d-d756c0160f95.png)
 #### Fix
 Make sure all the VM clocks are synchronized and set to the correct UTC date and time.
 If the above does not work, Reinstall the Keycloak helm release by running helm1 delete keycloak and then `an playbooks/keycloak.yml`
 
 ### Error 7
 #### Output 'Failed: No Internet Connection' on Windows Reg-lient
-
-
+![alt text](https://user-images.githubusercontent.com/17492419/121894774-d075e680-cd1f-11eb-8f9b-84f24b349791.png)
 
 #### Fix:
 Generate a new self-signed certificate for nginx and adding `console.sb` as the certificate's `Common Name (CN)`. The reason being, by default, MOSIP uses the server's IP address as the CN when it is generating the self-signed certificate and as mentioned here: https://stackoverflow.com/questions/29157861/java-certificateexception-no-subject-alternative-names-matching-ip-address and here: https://web.archive.org/web/20160201235032/http://www.jroller.com/hasant/entry/no_subject_alternative_names_matching , JAVA has issues with using an IP address as a CN in certificates. Here is a link on how to generate a self-signed certificate for nginx: https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-on-centos-7. This should not be an issue when using a trusted CA-issued certificate since this is issued to the domain name registered under MOSIP and not the IP address.
 
 ### Error 8
 #### Output: `Failed: Sync Configuration Failure`
-
-
+![alt text](https://user-images.githubusercontent.com/17492419/124417869-6c60a400-dd5a-11eb-89ef-290af1d38a29.png)
 
 Thi is related to your machine details not added to the `mosip_master` database. Add your machine details in the `master-machine_master.csv` file and run the `update_masterdb.sh` script to update the details in the database. The reg-client application should restart and you should be able to login with the user `110118` and Password `Techno@123`.
 
