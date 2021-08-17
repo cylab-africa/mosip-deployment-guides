@@ -17,6 +17,8 @@ Table of Contents
   - [7.4 Troubleshooting Tips](#74-troubleshooting-tips)
 - [8. Ansible vault](#8-ansible-vault)
 - [9. Windows Registration Client + Mock MDS Setup](#9-windows-registration-client--mock-mds-setup)
+  - [9.1](#91)
+  - [9.2 Mock-MDS Set Up](#92-mock-mds-set-up)
 - [10. Appendix - Known Installation Issues](#10-appendix---known-installation-issues)
   - [Error 1](#error-1)
     - [Output](#output)
@@ -290,7 +292,9 @@ mosip.kernel.auth.proxy-email=false
     * `av edit secrets.yml`
 
 ## 9. Windows Registration Client + Mock MDS Setup
+### 9.1
 * Go through the official MOSIP Guide located here: https://docs.mosip.io/platform/modules/registration-client/registration-client-setup to familiarize yourself with the registration client functionality and installation process.
+* Make sure you have JAVA 11 is installed on the Windows Machine where you are instllating Reg-Client
 * Set `mosip.hostname` environment variable on your machine with the host name of the console VM.
 * On the console VM, copy the maven-metadata.xml file from `/home/mosipuser/mosip-infra/deployment/sandbox-v2/roles/reg-client-prep/templates/` to `/usr/share/nginx/html/`
 * Login to the console VM and change the configs of the file: `/home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/registration/registration/registration-libs/src/main/resources/props/mosip-application.properties` to the below configuration:
@@ -317,9 +321,32 @@ mosip.reg.client.url=https\://console VM hostname/registration-client/1.1.2/reg-
 * Execute the run.bat file inside the unzipped folder.
 * Once the above file is executed, certain keys are generated and stored under this file:  `C:\Users\<Your User Name>\.mosipkeys\readme`
 * Copy the machine name, public key, and key index values together with other details about your machine such as MAC Address, Serial Number, and IP address and append them to this file: `/home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/commons/db_scripts/mosip_master/dml/master-machine_master.csv` located on the MOSIP console VM.
-* Then, cd to `/home/mosipuser/mosip-infra/deployment/sandbox-v2/test/regclient` and run the script: `./update_masterdb.sh /home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/commons/db_scripts/mosip_master`
-* Create an on-boarding user.
-* After doing the above, you can login to the Windows client using the username `11011` and password `mosip`. You will see an application restart prompt. Close the application and rerun the run.bat file. This time, login with the username `110118` and password `Techno@123`
+* Create a user and a role on keycloak to be used on the reg-client for on-boarding purposes.
+  * Refernce: https://docs.mosip.io/platform/modules/registration-client/first-user-registration-and-onboarding
+  * Created the `Default` role on keycloak
+  * Creat user `110140`
+  * Set the password `mosip` for the user on keycloak.
+  * Map the earlier created `Default` role to the user.
+  * Also, map the following roles to the user: `registration-processor` , `reg-admin`, and `reg-superviser`
+  * On the `Attributes` tab of the user, add the  following attributes:
+    * `rid` : `27841452330002620190527095023`
+    * `userPassword` : `e1NTSEEyNTZ9NXo3aTlwZ3MvdzBSdTJyeGdRcEM3RkFBOXZsTU1hZHRLbG1SSDIyTldxeDB3ZXV2aXgxWGJRPT0=`
+* Go to the console vm and add the created user details to `master-user_detail.csv` and `zone-user` files.
+* Then, cd to `/home/mosipuser/mosip-infra/deployment/sandbox-v2/test/regclient` and run the script: `./update_masterdb.sh /home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/commons/db_scripts/mosip_master` to update the master database
+* After doing the above, you can login to the Windows client using the username `110140` and password `mosip`. You will see an application restart prompt. Close the application and rerun the run.bat file and login again with the same username and password.
+
+### 9.2 Mock-MDS Set Up
+Reference: https://github.com/mosip/mosip-mock-services/tree/1.1.5/MockMDS
+
+The Mock MOSIP Device service (Mock-MDS) helps in simulating (mock) biometric devices for capturing user biometric details when on-boarding in the event that you do not have access to biometric devices.
+
+* Make sure that you install Apache Maven for building Mock MDS on the windows machine
+* To install Mock-MDS, download the `.zip` file from https://github.com/mosip/mosip-mock-services/tree/1.1.5
+* Unzip the downloaded folder.
+  * `cd` to MockMDS
+  * `mvn clean install`
+* After running the above, `target` folder is created on successful build. Go to this directory and run `run.bat` file.
+* Once this is running, the reg-client is able to detect the Mock-MDS and will be able to capture the mock biometric of users during on-boarding.
   
 ## 10. Appendix - Known Installation Issues
 ### Error 1
@@ -394,6 +421,7 @@ Generate a new self-signed certificate for nginx and adding `console.sb` as the 
 
 ### Error 8
 #### Output: 
+
 '`Failed: Sync Configuration Failure`' on Windows Reg-client
 ![alt text](https://user-images.githubusercontent.com/17492419/124417869-6c60a400-dd5a-11eb-89ef-290af1d38a29.png)
 
