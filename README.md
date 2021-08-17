@@ -17,7 +17,7 @@ Table of Contents
   - [7.4 Troubleshooting Tips](#74-troubleshooting-tips)
 - [8. Ansible vault](#8-ansible-vault)
 - [9. Windows Registration Client + Mock MDS Setup](#9-windows-registration-client--mock-mds-setup)
-  - [9.1](#91)
+  - [9.1 Windows Registration Client Set Up](#91-windows-registration-client-set-up)
   - [9.2 Mock-MDS Set Up](#92-mock-mds-set-up)
 - [10. Appendix - Known Installation Issues](#10-appendix---known-installation-issues)
   - [Error 1](#error-1)
@@ -292,7 +292,7 @@ mosip.kernel.auth.proxy-email=false
     * `av edit secrets.yml`
 
 ## 9. Windows Registration Client + Mock MDS Setup
-### 9.1
+### 9.1 Windows Registration Client Set Up
 * Go through the official MOSIP Guide located here: https://docs.mosip.io/platform/modules/registration-client/registration-client-setup to familiarize yourself with the registration client functionality and installation process.
 * Make sure you have JAVA 11 is installed on the Windows Machine where you are instllating Reg-Client
 * Set `mosip.hostname` environment variable on your machine with the host name of the console VM.
