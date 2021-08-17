@@ -38,7 +38,7 @@ Table of Contents
     - [Output 'Failed: No Internet Connection' on Windows Reg-lient](#output-failed-no-internet-connection-on-windows-reg-lient)
     - [Fix:](#fix-6)
   - [Error 8](#error-8)
-    - [Output: `Failed: Sync Configuration Failure`](#output-failed-sync-configuration-failure)
+    - [Output:](#output-4)
 
 
 ## Introduction
@@ -393,7 +393,8 @@ If the above does not work, Reinstall the Keycloak helm release by running helm1
 Generate a new self-signed certificate for nginx and adding `console.sb` as the certificate's `Common Name (CN)`. The reason being, by default, MOSIP uses the server's IP address as the CN when it is generating the self-signed certificate and as mentioned here: https://stackoverflow.com/questions/29157861/java-certificateexception-no-subject-alternative-names-matching-ip-address and here: https://web.archive.org/web/20160201235032/http://www.jroller.com/hasant/entry/no_subject_alternative_names_matching , JAVA has issues with using an IP address as a CN in certificates. Here is a link on how to generate a self-signed certificate for nginx: https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-on-centos-7. This should not be an issue when using a trusted CA-issued certificate since this is issued to the domain name registered under MOSIP and not the IP address.
 
 ### Error 8
-#### Output: `Failed: Sync Configuration Failure`
+#### Output: 
+'`Failed: Sync Configuration Failure`' on Windows Reg-client
 ![alt text](https://user-images.githubusercontent.com/17492419/124417869-6c60a400-dd5a-11eb-89ef-290af1d38a29.png)
 
 Thi is related to your machine details not added to the `mosip_master` database. Add your machine details in the `master-machine_master.csv` file and run the `update_masterdb.sh` script to update the details in the database. The reg-client application should restart and you should be able to login with the user `110118` and Password `Techno@123`.
