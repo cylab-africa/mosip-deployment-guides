@@ -6,7 +6,7 @@ Table of Contents
 - [Note:](#note)
 - [1. Hardware Setup](#1-hardware-setup)
 - [2. Setting up the machine environments for MOSIP](#2-setting-up-the-machine-environments-for-mosip)
-- [3.Give the user ssh permissions as root to all other machines](#3give-the-user-ssh-permissions-as-root-to-all-other-machines)
+- [3.Give the `mosipuser` user ssh permissions as root to all other machines](#3give-the-mosipuser-user-ssh-permissions-as-root-to-all-other-machines)
 - [4. Disable the firewall and set time to UTC on all machines](#4-disable-the-firewall-and-set-time-to-utc-on-all-machines)
 - [5. Installing dependencies and downloading the MOSIP repo](#5-installing-dependencies-and-downloading-the-mosip-repo)
 - [6. Configuring and Installing MOSIP](#6-configuring-and-installing-mosip)
@@ -16,7 +16,7 @@ Table of Contents
   - [7.3 Configuration Steps](#73-configuration-steps)
   - [7.4 Troubleshooting Tips](#74-troubleshooting-tips)
 - [8. Ansible vault](#8-ansible-vault)
-- [9. Windows Registration Client Setup](#9-windows-registration-client-setup)
+- [9. Windows Registration Client + Mock MDS Setup](#9-windows-registration-client--mock-mds-setup)
 - [10. Appendix - Known Installation Issues](#10-appendix---known-installation-issues)
   - [Error 1](#error-1)
     - [Output](#output)
@@ -88,7 +88,7 @@ This guide is based on the official MOSIP deployment [https://github.com/mosip/m
         * `mosipuser ALL=(ALL) ALL`
         * `%mosipuser ALL=(ALL) NOPASSWD:ALL`
 
-## 3.Give the user ssh permissions as root to all other machines
+## 3.Give the `mosipuser` user ssh permissions as root to all other machines
 
 * Keep running these commands on the console machines:
     * Switch to the mosipuser account using the password you created for it.
@@ -97,7 +97,7 @@ This guide is based on the official MOSIP deployment [https://github.com/mosip/m
     * `ssh-keygen -t rsa`
 * And copy the ssh public key to clipboard manually (ctrl+c; copying using mouse or browser causes issues later on when pasting, so don’t do it! )
     * `cat .ssh/id_rsa.pub`
-* Store the ssh keys in the authorized keys of the console VM and the root of all other VMs:
+* Store the ssh keys in the authorized keys of the console VM and the root of all other VMs as shown below:
     * Run this on the console machine and add the copied ssh public key to the file
         *  `nano .ssh/authorized_keys`
     * Then change the permissions
@@ -113,7 +113,7 @@ This guide is based on the official MOSIP deployment [https://github.com/mosip/m
     * `sudo systemctl stop firewalld`
     * `sudo systemctl disable firewalld`
 * Set the date and time of the VMs to the correct UTC time
-    * `sudo yum install ntp ntpdate -y && sudo systemctl enable ntpd && sudo ntpdate -u -s 0.centos.pool.ntp.org 1.centos.pool.ntp.org 2.centos.pool.ntp.org && sudosystemctl restart ntpd && sudo timedatectl`
+    * `sudo yum install ntp ntpdate -y && sudo systemctl enable ntpd && sudo ntpdate -u -s 0.centos.pool.ntp.org 1.centos.pool.ntp.org 2.centos.pool.ntp.org && sudo systemctl restart ntpd && sudo timedatectl`
 
 ## 5. Installing dependencies and downloading the MOSIP repo
 * Follow these instructions on the Console VM:
@@ -132,9 +132,9 @@ This guide is based on the official MOSIP deployment [https://github.com/mosip/m
         * `source ~/.bashrc`
 
 ## 6. Configuring and Installing MOSIP
-* Update hosts.ini as per your setup. Make sure the machine names and IP addresses match your setup.
+* Update the `hosts.ini` as per your setup. Make sure the machine names and IP addresses match your setup.
 * Follow these instructions on the Console VM
-    * Open group_vars/all.yml using `nano mosip-infra/deployment/sandbox-v2/group_vars/all.yml` and replace the following values as below:
+    * Open `group_vars/all.yml` using `nano mosip-infra/deployment/sandbox-v2/group_vars/all.yml` and replace the following values as below:
         * `sandbox_domain_name: '{{inventory_hostname}}'`
         * `site:`
         * `sandbox_public_url: 'https://{{sandbox_domain_name}}'`
@@ -147,14 +147,14 @@ This guide is based on the official MOSIP deployment [https://github.com/mosip/m
 * Run the ansible scripts that will install MOSIP
     * `cd mosip-infra/deployment/sandbox-v2/`
     * `an site.yml`
-* The main MOSIP web interface can be accessed by typing the console VMs IP address / hostname into a web browser.
+* The main MOSIP web interface can be accessed by typing the console VM's hostname into a web browser.
 * To access the Pre-Registration UI after the installation is complete, use the below link:
     * `<your console hostname>/pre-registration-ui`
-    * To avoid issues with the pre-registration page not loading properly. Make sure you access the page using the domain name of the console VM and not its IP Address. If you do not have a DNS server on your network to translate the console VM domain name to its IP Address, you can add a static DNS mapping of the console machine’s domain name and IP Address on your machine. In Linux/MAC, this mapping can be done in the /etc/hosts file. In Windows this can be done in the C:\Windows\System32\drivers\etc\hosts file.
+    * To avoid issues with the pre-registration page not loading properly. Make sure you access the page using the domain name of the console VM and not its IP Address. If you do not have a DNS server on your network to translate the console VM domain name to its IP Address, you can add a static DNS mapping of the console machine’s domain name and IP Address on your machine. In Linux/MAC, this mapping can be done in the `/etc/hosts` file. In Windows this can be done in the `C:\Windows\System32\drivers\etc\hosts` file.
 
 * While testing:
-    * You can connect to it using OTP and the static OTP value: `111111`. To set up random OTPs to be sent to the user's email, see the below email configuration instructions.
-    * You can use this fake valid postal code: `14022`
+    * You can connect to the pre-registration interface using static OTP value: `111111`. To set up random OTPs to be sent to the user's email, see the below email configuration instructions.
+    * You can use this fake valid postal code: `14022` when registering on the pre-registration interface.
 
 ## 7. Email Configuration
 ### 7.1 References 
@@ -289,19 +289,19 @@ mosip.kernel.auth.proxy-email=false
     * `av view secrets.yml`
     * `av edit secrets.yml`
 
-## 9. Windows Registration Client Setup
-* Go through the official MOSIP Guide located here: `https://docs.mosip.io/platform/modules/registration-client/registration-client-setup` to familiarize yourself with the registration client functionality and installation process.
+## 9. Windows Registration Client + Mock MDS Setup
+* Go through the official MOSIP Guide located here: https://docs.mosip.io/platform/modules/registration-client/registration-client-setup to familiarize yourself with the registration client functionality and installation process.
 * Set `mosip.hostname` environment variable on your machine with the host name of the console VM.
-* On the console VM, copy the maven-metadata.xml file from `/home/mosipuser/mosip-infra/deployment/sandbox-v2/roles/reg-client-prep/templates/ to /usr/share/nginx/html/`
+* On the console VM, copy the maven-metadata.xml file from `/home/mosipuser/mosip-infra/deployment/sandbox-v2/roles/reg-client-prep/templates/` to `/usr/share/nginx/html/`
 * Login to the console VM and change the configs of the file: `/home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/registration/registration/registration-libs/src/main/resources/props/mosip-application.properties` to the below configuration:
 
 ```
 mosip.reg.healthcheck.url=https\://<console VM hostname>/v1/authmanager/actuator/health
 mosip.reg.rollback.path=../BackUp
 mosip.reg.cerpath=/cer//mosip_cer.cer
-mosip.reg.db.key=bW9zaXAxMjM0NQ\=\=
+mosip.reg.db.key=bW9zaXAxMjM0NQ\=\= # This key might be different on your set up
 mosip.reg.xml.file.url=https\://<console VM hostname>/maven-metadata.xml
-mosip.reg.app.key=bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4\=
+mosip.reg.app.key=bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4\= # This key might be different on your set up
 mosip.reg.client.tpm.availability=N
 mosip.reg.env=qa
 mosip.reg.dbpath=db/reg
@@ -318,6 +318,7 @@ mosip.reg.client.url=https\://console VM hostname/registration-client/1.1.2/reg-
 * Once the above file is executed, certain keys are generated and stored under this file:  `C:\Users\<Your User Name>\.mosipkeys\readme`
 * Copy the machine name, public key, and key index values together with other details about your machine such as MAC Address, Serial Number, and IP address and append them to this file: `/home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/commons/db_scripts/mosip_master/dml/master-machine_master.csv` located on the MOSIP console VM.
 * Then, cd to `/home/mosipuser/mosip-infra/deployment/sandbox-v2/test/regclient` and run the script: `./update_masterdb.sh /home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/commons/db_scripts/mosip_master`
+* Create an on-boarding user.
 * After doing the above, you can login to the Windows client using the username `11011` and password `mosip`. You will see an application restart prompt. Close the application and rerun the run.bat file. This time, login with the username `110118` and password `Techno@123`
   
 ## 10. Appendix - Known Installation Issues
