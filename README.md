@@ -19,10 +19,12 @@ Table of Contents
 - [9. Windows Registration Client + Mock MDS Setup](#9-windows-registration-client--mock-mds-setup)
   - [9.1 Windows Registration Client Set Up](#91-windows-registration-client-set-up)
   - [9.2 Mock-MDS Set Up](#92-mock-mds-set-up)
-- [10. Appendix - Known Installation Issues](#10-appendix---known-installation-issues)
+- [10. Appendix](#10-appendix)
+  - [Installation Errors](#installation-errors)
   - [Error 1](#error-1)
     - [Output](#output)
     - [Fix](#fix)
+    - [Resources Used](#resources-used)
   - [Error2](#error2)
     - [Output](#output-1)
     - [Fix](#fix-1)
@@ -34,12 +36,13 @@ Table of Contents
     - [Fix](#fix-3)
   - [Error 5](#error-5)
     - [Fix](#fix-4)
-  - [Error 6](#error-6)
+  - [Usage Errors](#usage-errors)
+  - [Error 1](#error-1-1)
     - [Fix](#fix-5)
-  - [Error 7](#error-7)
+  - [Error 2](#error-2)
     - [Output 'Failed: No Internet Connection' on Windows Reg-lient](#output-failed-no-internet-connection-on-windows-reg-lient)
     - [Fix:](#fix-6)
-  - [Error 8](#error-8)
+  - [Error 3](#error-3-1)
     - [Output:](#output-4)
 
 
@@ -348,7 +351,11 @@ The Mock MOSIP Device service (Mock-MDS) helps in simulating (mock) biometric de
 * After running the above, `target` folder is created on successful build. Go to this directory and run `run.bat` file.
 * Once this is running, the reg-client is able to detect the Mock-MDS and will be able to capture the mock biometric of users during on-boarding.
   
-## 10. Appendix - Known Installation Issues
+## 10. Appendix
+### Installation Errors
+
+Below are the installation errors encountered when installing of MOSIP Sandbox-v2 1.1.2 whose installation instructions are specified here: https://github.com/mosip/mosip-infra/tree/1.1.2/deployment/sandbox-v2
+
 ### Error 1
 #### Output
 ```
@@ -356,13 +363,17 @@ TASK [k8scluster/cni : Create flannel network daemonset] ***********************
 fatal: [dmzmaster.sb -> 172.29.108.22]: FAILED! => {"changed": true, "cmd": ["kubectl", "apply", "--kubeconfig=/etc/kubernetes/admin.conf", "-f", "/etc/kubernetes/network/"], "delta": "0:00:00.083852", "end": "2021-04-27 13:42:54.099146", "msg": "non-zero return code", "rc": 1, "start": "2021-04-27 13:42:54.015294", "stderr": "The connection to the server 172.29.108.22:6443 was refused - did you specify the right host or port?", "stderr_lines": ["The connection to the server 172.29.108.22:6443 was refused - did you specify the right host or port?"], "stdout": "", "stdout_lines": []}
 ```
 #### Fix
-* Run the following commands on dmzmaster.sb (or on the node where the error happened):
+* Run the following commands on `dmzmaster.sb` (or on the node where the error happened). his issue happens when the MOSIP installation script is executed following a cluster reset instruction (an reset.yml). The cluster reset script does not release the k8s port on the node to be used in the subsequent installation.
 ```
 systemctl stop docker && systemctl stop kubelet
 kubeadm reset
 rm -rf /etc/cni/net.d
 rm -rf  $HOME/.kube/config
 ```
+
+#### Resources Used
+https://stackoverflow.com/questions/56737867/the-connection-to-the-server-x-x-x-6443-was-refused-did-you-specify-the-right 
+
 ### Error2
 #### Output
 ```
@@ -404,7 +415,8 @@ The admin helm release fails to deploy.
 #### Fix
 * The docker image version for the admin playbook is incorrect. Find the relevant docker images in `versions.yml` file, replace `1.1.3` with `1.1.2`
 
-### Error 6
+### Usage Errors
+### Error 1
 Default OTP of 111111 is not valid on the pre-registration-ui as shown below
 
 ![alt text](https://user-images.githubusercontent.com/17492419/120472756-92cfa000-c3a6-11eb-857d-d756c0160f95.png)
@@ -412,14 +424,14 @@ Default OTP of 111111 is not valid on the pre-registration-ui as shown below
 Make sure all the VM clocks are synchronized and set to the correct UTC date and time.
 If the above does not work, Reinstall the Keycloak helm release by running helm1 delete keycloak and then `an playbooks/keycloak.yml`
 
-### Error 7
+### Error 2
 #### Output 'Failed: No Internet Connection' on Windows Reg-lient
 ![alt text](https://user-images.githubusercontent.com/17492419/121894774-d075e680-cd1f-11eb-8f9b-84f24b349791.png)
 
 #### Fix:
 Generate a new self-signed certificate for nginx and adding `console.sb` as the certificate's `Common Name (CN)`. The reason being, by default, MOSIP uses the server's IP address as the CN when it is generating the self-signed certificate and as mentioned here: https://stackoverflow.com/questions/29157861/java-certificateexception-no-subject-alternative-names-matching-ip-address and here: https://web.archive.org/web/20160201235032/http://www.jroller.com/hasant/entry/no_subject_alternative_names_matching , JAVA has issues with using an IP address as a CN in certificates. Here is a link on how to generate a self-signed certificate for nginx: https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-on-centos-7. This should not be an issue when using a trusted CA-issued certificate since this is issued to the domain name registered under MOSIP and not the IP address.
 
-### Error 8
+### Error 3
 #### Output: 
 
 '`Failed: Sync Configuration Failure`' on Windows Reg-client
