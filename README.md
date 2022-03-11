@@ -321,7 +321,9 @@ mosip.reg.client.url=https\://console VM hostname/registration-client/1.1.2/reg-
 
 * Download the client zip file from `https://<your console hostname>/registration-client/1.1.2/reg-client.zip`
 * Unzip the downloaded client
-* Execute the run.bat file inside the unzipped folder.
+* If you are using self-signed certificates, download the nginx TLS certificate to your Windows Machine where the reg-client will be installed. One of the ways you can achieve this is by browsing to the console VM's hostname i.e `console.sb` > Click on the Certificate Information Tab (Not Secure) > Certificate is not Valid > Details > Copy to File > Next > Select DER Encoded Binary X.509 (.CER) > Next.
+* After the above, run the following command to import the nginx self-signed signed to JAVA's certificate store on the machine where the reg-client will be installed: `keytool -import -noprompt -trustcacerts -alias MOSIPCert -file <path_to_downloaded_self_signed.cer> -keystore <path-to-reg-client>\jre\jre\lib\security\cacerts -storepass changeit`
+* After the abve, execute the run.bat file inside the unzipped folder.
 * Once the above file is executed, certain keys are generated and stored under this file:  `C:\Users\<Your User Name>\.mosipkeys\readme`
 * Copy the machine name, public key, and key index values together with other details about your machine such as MAC Address, Serial Number, and IP address and append them to this file: `/home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/commons/db_scripts/mosip_master/dml/master-machine_master.csv` located on the MOSIP console VM.
 * Create a user and a role on keycloak to be used on the reg-client for on-boarding purposes.
