@@ -19,7 +19,17 @@ Table of Contents
 - [9. Windows Registration Client + Mock MDS Setup](#9-windows-registration-client--mock-mds-setup)
   - [9.1 Windows Registration Client Set Up](#91-windows-registration-client-set-up)
   - [9.2 Mock-MDS Set Up](#92-mock-mds-set-up)
-- [10. Appendix](#10-appendix)
+- [10. Biometric Devices Integration](#10-biometric-devices-integration)
+  - [Enabling MDS integration](#enabling-mds-integration)
+  - [Registering biometric devices for registration](#registering-biometric-devices-for-registration)
+  - [Adding a Policy Group](#adding-a-policy-group)
+    - [API to Create a Policy Group](#api-to-create-a-policy-group)
+      - [API Request Body](#api-request-body)
+      - [API Response Body](#api-response-body)
+  - [Registering Device Provider](#registering-device-provider)
+    - [API to Create a Device Provider](#api-to-create-a-device-provider)
+      - [API Request Body](#api-request-body-1)
+- [11. Appendix](#11-appendix)
   - [Installation Errors](#installation-errors)
   - [Error 1](#error-1)
     - [Output](#output)
@@ -321,7 +331,9 @@ mosip.reg.client.url=https\://console VM hostname/registration-client/1.1.2/reg-
 
 * Download the client zip file from `https://<your console hostname>/registration-client/1.1.2/reg-client.zip`
 * Unzip the downloaded client
-* Execute the run.bat file inside the unzipped folder.
+* If you are using self-signed certificates, download the nginx TLS certificate to your Windows Machine where the reg-client will be installed. One of the ways you can achieve this is by browsing to the console VM's hostname i.e `console.sb` > Click on the Certificate Information Tab (Not Secure) > Certificate is not Valid > Details > Copy to File > Next > Select DER Encoded Binary X.509 (.CER) > Next.
+* After the above, run the following command to import the nginx self-signed signed to JAVA's certificate store on the machine where the reg-client will be installed: `keytool -import -noprompt -trustcacerts -alias MOSIPCert -file <path_to_downloaded_self_signed.cer> -keystore <path-to-reg-client>\jre\jre\lib\security\cacerts -storepass changeit`
+* After the abve, execute the run.bat file inside the unzipped folder.
 * Once the above file is executed, certain keys are generated and stored under this file:  `C:\Users\<Your User Name>\.mosipkeys\readme`
 * Copy the machine name, public key, and key index values together with other details about your machine such as MAC Address, Serial Number, and IP address and append them to this file: `/home/mosipuser/mosip-infra/deployment/sandbox-v2/tmp/commons/db_scripts/mosip_master/dml/master-machine_master.csv` located on the MOSIP console VM.
 * Create a user and a role on keycloak to be used on the reg-client for on-boarding purposes.
@@ -350,8 +362,70 @@ The Mock MOSIP Device service (Mock-MDS) helps in simulating (mock) biometric de
   * `mvn clean install`
 * After running the above, `target` folder is created on successful build. Go to this directory and run `run.bat` file.
 * Once this is running, the reg-client is able to detect the Mock-MDS and will be able to capture the mock biometric of users during on-boarding.
-  
-## 10. Appendix
+
+## 10. Biometric Devices Integration
+Reference: https://docs.mosip.io/platform/modules/registration-client/guide-to-configure-mosip-for-biometrics
+
+We also integrated our deployment with the following biometrics devices
+1. Logitech C930E 1080p WebCam
+2. IriShield-USB BK2121U Iris Scanner
+3. FingerPrint Scanner
+
+Before on-boarding the biometrics devices on MOSIP, one has to first configure MOSIP as below:
+
+### Enabling MDS integration
+Update the file `/srv/nfs/mosip/mosip-config/sandbox/registration-mz.properties` as below.
+
+`mosip.mdm.enabled=Y`
+
+### Registering biometric devices for registration
+
+
+### Adding a Policy Group
+#### API to Create a Policy Group
+##### API Request Body 
+Endpoint: POST `https://console.sb/partnermanagement/v1/policies/policies/policyGroup`
+```
+{
+  "id": "string",
+  "metadata": {},
+  "request": {
+    "desc": "Device Providers Policy",
+    "name": "Device Providers"
+  },
+  "requesttime": "2021-08-09T02:15:49.350Z",
+  "version": "string"
+}
+```
+
+##### API Response Body
+```
+{
+    "id": "string",
+    "version": "string",
+    "responsetime": "2021-08-09T02:15:26.942Z",
+    "response": {
+        "id": "515020",
+        "name": "Device Providers",
+        "desc": "Device Providers Policy",
+        "is_Active": true,
+        "cr_by": "global-admin",
+        "cr_dtimes": "2021-08-09T02:15:26.930569",
+        "up_by": null,
+        "upd_dtimes": null
+    },
+    "errors": []
+}
+```
+
+### Registering Device Provider
+#### API to Create a Device Provider
+##### API Request Body 
+Endpoint: POST `https://console.sb/partnermanagement/v1/partners/partners`
+    
+
+
+## 11. Appendix
 ### Installation Errors
 
 Below are the installation errors encountered when installing of MOSIP Sandbox-v2 1.1.2 whose installation instructions are specified here: https://github.com/mosip/mosip-infra/tree/1.1.2/deployment/sandbox-v2
