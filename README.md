@@ -143,7 +143,7 @@ This guide is based on the official MOSIP deployment [https://github.com/mosip/m
     * Change ownership of the cloned repo (if not the owner)
         * `sudo chown -R mosipuser mosip-infra/`
     * Install Ansible and create shortcuts:
-        * `./hpreinstall.sh`
+        * `./preinstall.sh`
         * `source ~/.bashrc`
 
 ## 6. Configuring and Installing MOSIP
