@@ -41,16 +41,11 @@ ansible-playbook -i hosts.ini update_root.yml
 sudo -i -u mosipuser bash << EOF
 chmod 600 .ssh/authorized_keys
 chmod 600 .ssh/id_rsa
-git clone https://github.com/0xabdi/mosip-infra.git
+git clone https://github.com/mosip/mosip-infra.git
 cd mosip-infra
-git checkout 1.1.5.5
+git checkout 1.2.0.1
 cd deployment/sandbox-v2
 ./preinstall.sh
-source ~/.bashrc
-sudo curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
-python get-pip.py && sudo pip install --upgrade pip==20.3.4
-export PATH="/usr/loca/bin:$PATH"
-echo "export PATH='/usr/loca/bin:$PATH'" >> ~/.bashrc
 source ~/.bashrc
 echo "foo" > vaultpass.txt
 ansible-playbook -i hosts.ini --vault-password-file vaultpass.txt -e @secrets.yml site.yml
