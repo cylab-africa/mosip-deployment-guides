@@ -440,7 +440,3 @@ Generate a new self-signed certificate for nginx and adding `console.sb` as the 
 ![alt text](https://user-images.githubusercontent.com/17492419/124417869-6c60a400-dd5a-11eb-89ef-290af1d38a29.png)
 
 Thi is related to your machine details not added to the `mosip_master` database. Add your machine details in the `master-machine_master.csv` file and run the `update_masterdb.sh` script to update the details in the database. The reg-client application should restart and you should be able to login with the user `110118` and Password `Techno@123`.
-
-
-
-
