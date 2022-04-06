@@ -1,0 +1,31 @@
+- hosts: all
+  tasks:
+    - name: Update OS
+      become: yes
+      shell: yum update -y
+    # - name: Extend Disk Size
+    #   become: yes
+    #   shell: (echo d; echo n; echo p; echo ""; echo ""; echo ""; echo w) | fdisk /dev/sda
+    # - name: restart server
+    #   reboot:
+    # - name: Extending disk size using xfs_growfs 
+    #   become: yes
+    #   shell: xfs_growfs /dev/sda1
+    - name: Install nano
+      become: yes
+      shell: yum install -y nano
+    - name: remove kubelet
+      become: yes
+      shell: yum remove -y kubelet kubectl kubeadm
+    - name: update keys
+      become: yes
+      shell: cat /home/username/.ssh/authorized_keys >> /root/.ssh/authorized_keys
+    - name: update firewall
+      become: yes
+      shell: systemctl stop firewalld
+    - name: update firewall
+      become: yes
+      shell: systemctl disable firewalld
+    - name: create folders
+      become: yes
+      shell: mkdir -p /var/lib/docker
