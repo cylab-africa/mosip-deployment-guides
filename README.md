@@ -19,17 +19,7 @@ Table of Contents
 - [9. Windows Registration Client + Mock MDS Setup](#9-windows-registration-client--mock-mds-setup)
   - [9.1 Windows Registration Client Set Up](#91-windows-registration-client-set-up)
   - [9.2 Mock-MDS Set Up](#92-mock-mds-set-up)
-- [10. Biometric Devices Integration](#10-biometric-devices-integration)
-  - [Enabling MDS integration](#enabling-mds-integration)
-  - [Registering biometric devices for registration](#registering-biometric-devices-for-registration)
-  - [Adding a Policy Group](#adding-a-policy-group)
-    - [API to Create a Policy Group](#api-to-create-a-policy-group)
-      - [API Request Body](#api-request-body)
-      - [API Response Body](#api-response-body)
-  - [Registering Device Provider](#registering-device-provider)
-    - [API to Create a Device Provider](#api-to-create-a-device-provider)
-      - [API Request Body](#api-request-body-1)
-- [11. Appendix](#11-appendix)
+- [10. Appendix](#10-appendix)
   - [Installation Errors](#installation-errors)
   - [Error 1](#error-1)
     - [Output](#output)
@@ -363,69 +353,7 @@ The Mock MOSIP Device service (Mock-MDS) helps in simulating (mock) biometric de
 * After running the above, `target` folder is created on successful build. Go to this directory and run `run.bat` file.
 * Once this is running, the reg-client is able to detect the Mock-MDS and will be able to capture the mock biometric of users during on-boarding.
 
-## 10. Biometric Devices Integration
-Reference: https://docs.mosip.io/platform/modules/registration-client/guide-to-configure-mosip-for-biometrics
-
-We also integrated our deployment with the following biometrics devices
-1. Logitech C930E 1080p WebCam
-2. IriShield-USB BK2121U Iris Scanner
-3. FingerPrint Scanner
-
-Before on-boarding the biometrics devices on MOSIP, one has to first configure MOSIP as below:
-
-### Enabling MDS integration
-Update the file `/srv/nfs/mosip/mosip-config/sandbox/registration-mz.properties` as below.
-
-`mosip.mdm.enabled=Y`
-
-### Registering biometric devices for registration
-
-
-### Adding a Policy Group
-#### API to Create a Policy Group
-##### API Request Body 
-Endpoint: POST `https://console.sb/partnermanagement/v1/policies/policies/policyGroup`
-```
-{
-  "id": "string",
-  "metadata": {},
-  "request": {
-    "desc": "Device Providers Policy",
-    "name": "Device Providers"
-  },
-  "requesttime": "2021-08-09T02:15:49.350Z",
-  "version": "string"
-}
-```
-
-##### API Response Body
-```
-{
-    "id": "string",
-    "version": "string",
-    "responsetime": "2021-08-09T02:15:26.942Z",
-    "response": {
-        "id": "515020",
-        "name": "Device Providers",
-        "desc": "Device Providers Policy",
-        "is_Active": true,
-        "cr_by": "global-admin",
-        "cr_dtimes": "2021-08-09T02:15:26.930569",
-        "up_by": null,
-        "upd_dtimes": null
-    },
-    "errors": []
-}
-```
-
-### Registering Device Provider
-#### API to Create a Device Provider
-##### API Request Body 
-Endpoint: POST `https://console.sb/partnermanagement/v1/partners/partners`
-    
-
-
-## 11. Appendix
+## 10. Appendix
 ### Installation Errors
 
 Below are the installation errors encountered when installing of MOSIP Sandbox-v2 1.1.2 whose installation instructions are specified here: https://github.com/mosip/mosip-infra/tree/1.1.2/deployment/sandbox-v2
