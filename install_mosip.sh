@@ -15,8 +15,6 @@ sudo yum install -y nginx-mod-stream htop byobu git ansible wget nano patch
 
 sudo useradd nfsnobody
 
-#sudo patch -u /etc/yum.repos.d/kubernetes.repo -i kube.patch
-
 sudo useradd mosipuser
 echo -e "alcmw,m\nalcmw,m" | sudo passwd mosipuser
 sudo usermod -aG wheel mosipuser
@@ -47,6 +45,8 @@ git checkout 1.2.0.1
 cd deployment/sandbox-v2
 ./preinstall.sh
 source ~/.bashrc
+export PATH="/home/mosipuser/bin:$PATH"
+echo "export PATH='/home/mosipuser/bin:$PATH'" >> ~/.bashrc
 echo "foo" > vaultpass.txt
 ansible-playbook -i hosts.ini --vault-password-file vaultpass.txt -e @secrets.yml site.yml
 EOF
