@@ -49,8 +49,8 @@ cd deployment/sandbox-v2
 source ~/.bashrc
 sudo curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
 python get-pip.py && sudo pip install --upgrade pip==20.3.4
-export PATH="/usr/loca/bin:$PATH"
-echo "export PATH='/usr/loca/bin:$PATH'" >> ~/.bashrc
+export PATH="/home/mosipuser/bin:$PATH"
+echo "export PATH='/home/mosipuser/bin:$PATH'" >> ~/.bashrc
 source ~/.bashrc
 echo "foo" > vaultpass.txt
 ansible-playbook -i hosts.ini --vault-password-file vaultpass.txt -e @secrets.yml site.yml
