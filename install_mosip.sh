@@ -45,6 +45,8 @@ git checkout 1.2.0-rc1
 cd deployment/sandbox-v2
 ./preinstall.sh
 source ~/.bashrc
+sudo curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
+python get-pip.py && sudo pip install --upgrade pip==20.3.4
 export PATH="/home/mosipuser/bin:$PATH"
 echo "export PATH='/home/mosipuser/bin:$PATH'" >> ~/.bashrc
 echo "foo" > vaultpass.txt
