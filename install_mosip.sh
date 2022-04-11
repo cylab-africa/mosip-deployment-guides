@@ -41,7 +41,7 @@ chmod 600 .ssh/authorized_keys
 chmod 600 .ssh/id_rsa
 git clone https://github.com/cylab-africa/mosip-infra.git
 cd mosip-infra
-git checkout 1.2.0.1
+git checkout 1.2.0-rc1
 cd deployment/sandbox-v2
 ./preinstall.sh
 source ~/.bashrc

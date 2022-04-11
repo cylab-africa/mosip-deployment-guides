@@ -1,5 +1,5 @@
-# Mosip Sandbox-v2 1.2.0 On Prem Deployment
-The following instructions walk you through setps for installing MOSIP sandbox-v2 1.2.0 on an on-premise private infrastructure.
+# Mosip Sandbox-v2 1.2.0-rc1 On Prem Deployment
+The following instructions walk you through setps for installing MOSIP sandbox-v2 1.2.0-rc1 on an on-premise private infrastructure.
 
 ## Infrastructure Set-up
 This set up uses `Ubuntu Desktop 20.0.4` as the host OS hosted on a baremetal  server.
@@ -7,7 +7,7 @@ This set up uses `Ubuntu Desktop 20.0.4` as the host OS hosted on a baremetal  s
 1. Download and install the latest version of virtualbox from: https://www.virtualbox.org/ . sYou can also use other hypervisors of your choice such as VMWARE, Hyper-V, etc. However, these instructions were tested against the Virtualbox hypervisor. The specs of this baremetal server are: `2TB SSD storage, 36 CPU Cores, and 128GB of RAM`.
 2. Clone this repo: https://github.com/cylab-africa/mosip-1.1.5-on-prem-deployment.git into your host server by running: `git clone https://github.com/cylab-africa/mosip-onprem-deployment-guides.git` 
 3. cd to the repo: `cd mosip-onprem-deployment-guides`
-4. Checkout the `1.2.0` branch by running: `git checkout 1.2.0`
+4. Checkout the `1.2.0-rc1` branch by running: `git checkout 1.2.0-rc1`
 5.  After the above, run `bash ./infrastructure_set_up.sh` to setup the MOSIP VMs. This script creates the following VMs where MOSIP will be instaled. Make sure you have SSH keys generated on your host server in the following locations: `~/.ssh/id_rsa` and `~/.ssh/id_rsa.pub` These keys are used by infra set up script.
    
 | Component       | Number of VMs | Configuration      | Storage     |
@@ -29,7 +29,7 @@ This set up uses `Ubuntu Desktop 20.0.4` as the host OS hosted on a baremetal  s
 2. Install Git: `sudo yum install git -y`
 3. Clone this repo: https://github.com/cylab-africa/mosip-onprem-deployment-guides.git into the console VM server by running: `git clone https://github.com/cylab-africa/mosip-onprem-deployment-guides.git` 
 4. cd to the repo: `cd mosip-onprem-deployment-guides`
-5. Check the `1.2.0` branch by runnign: `git checkout 1.2.0`
+5. Check the `1.2.0-rc1` branch by runnign: `git checkout 1.2.0-rc1`
 6. Run `bash ./install_mosip.sh` to install MOSIP on the above created VMS.
 
 
