@@ -29,3 +29,6 @@
     - name: create folders
       become: yes
       shell: mkdir -p /var/lib/docker
+    - name: Enable NTP
+      become: yes
+      shell: sudo yum install ntp ntpdate -y && sudo systemctl enable ntpd && sudo ntpdate -u -s 0.centos.pool.ntp.org 1.centos.pool.ntp.org 2.centos.pool.ntp.org && sudo systemctl restart ntpd && sudo timedatectl
