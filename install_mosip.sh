@@ -51,5 +51,3 @@ echo "foo" > vaultpass.txt
 ansible-playbook -i hosts.ini --vault-password-file vaultpass.txt -e @secrets.yml site.yml
 EOF
 
-echo "Mosip is deployed successfully, please go to the website $(hostname)"
-
