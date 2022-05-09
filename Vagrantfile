@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
         console.disksize.size = "150GB"
         console.vm.hostname = "console.sb"
         # Change the bridge interface and IP Address as per your set-up
-        console.vm.network "public_network", bridge: "eno2", ip: "172.29.108.11", hostname: true
+        console.vm.network "public_network", bridge: "eno2", mode: "bridge",ip: "172.29.108.11", hostname: true
         
         # Default Router: This enables the vagrant VMs to be reached over the network
         console.vm.provision "shell",
