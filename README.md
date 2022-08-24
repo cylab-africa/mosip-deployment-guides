@@ -34,3 +34,49 @@ This set up uses `Ubuntu Desktop 20.0.4` as the host OS hosted on a baremetal  s
    * Therefore, you should obtain a publicly accessible domain name from any provider of your choice and specify this domain name in the `group_vars/all.yml` file under `sandbox_domain_name: your-domain-name`.
    * After the above, you should create a DNS A record pointing the domain name to the public IP Address of MOSIP's Console VM.
 7. Run `bash ./install_mosip.sh` to install MOSIP on the above created VMS.
+
+
+
+
+
+## VMs related Issues 
+### Error 1: 
+The console VM cannot be reached over the network (Timeout when fetching console homepage and pings from the outside fail)
+#### Fix:  
+Go to the directory that contains the `Vagrantfile` and run `vagrant reload console`
+#### Auto-Fix: 
+
+
+### Error 2: 
+The console main webpage cannot load but pings still go through.
+#### Fix:  
+SSH into the console VM and run `sudo service nginx start`
+#### Auto-Fix: 
+
+### Error 3:
+`vagrant reload` on certain VMs times out and prints host wasn’t ready for OS commands 
+The console main webpage cannot load but pings still go through.
+#### Fix:  
+Ensure neither openvpn nor another service is enabled and attempting to automatically start on boot: `sudo service openvpn disable`
+
+
+
+# Microservices related Issues 
+### Error 1: 
+Kubelet service failing to start on masters and/or workers
+#### Fix:  
+Add `exclude=kubectl kubeadm kubelet` to `/etc/yum.conf` and reinstall v1.21.1 for all concerned VMs
+
+
+
+### Error 2: 
+Some pods failing to start with error `Exception in thread "main" java.util.zip.ZipException: zip file is empty`
+#### Fix:  
+Restart artifactory-service pod and ensure all workers are 100% up
+
+
+### Error 3:
+Pods failing to start with error `Resolving mz.ingress (mz.ingress)... failed: Temporary failure in name resolution` or `Resolving mzworker0.sb (mzworker0.sb)... failed: Temporary failure in name resolution`
+#### Fix:  
+Ensure /etc/resolv.conf contains the line “nameserver” followed by your console IP address
+
